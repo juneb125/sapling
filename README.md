@@ -2,12 +2,12 @@
 Mini-tree CLI program, written in Rust
 
 ## Todo's
-[ ] read command line arguments instead of asking for input<br/>
-[ ] add tree-like UI (see below)<br/>
+- [ ] read command line arguments instead of asking for input<br/>
+- [ ] add tree-like UI (see below)<br/>
 
  ## Tree-like UI
-**Box Drawings**
-[Box-Drawing Characters Wikipedia page](https://en.wikipedia.org/wiki/Box-drawing_characters)
+**Box Drawings**<br/>
+[Box-Drawing Characters Wikipedia page](https://en.wikipedia.org/wiki/Box-drawing_characters)<br/>
 There's a nice table of box drawing characters and their Unicode codes [here](https://en.wikipedia.org/wiki/Box-drawing_characters#Box_Drawing)
 ```rust
 '│' // show hierarchy - '\u{2502}'
