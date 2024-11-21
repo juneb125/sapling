@@ -1,11 +1,18 @@
 # Sapling 🌱
-Mini-tree CLI program, written in Rust
+Mini-tree CLI program, written in Rust<br/>
 
-## Todo's
-- [ ] read command line arguments instead of asking for input<br/>
-- [ ] add tree-like UI (see below)<br/>
+**Table of Contents**
+* [Goals](#goals)
+* [Tree-like TUI](#tree-like-tui)
+* [Todo's](#todos)
 
- ## Tree-like UI
+## Goals
+* put it on ...
+    * cargo crates
+    * nixpkgs
+    * homebrew
+
+ ## Tree-like TUI
 **Box Drawings**<br/>
 [Box-Drawing Characters Wikipedia page](https://en.wikipedia.org/wiki/Box-drawing_characters)<br/>
 There's a nice table of box drawing characters and their Unicode codes [here](https://en.wikipedia.org/wiki/Box-drawing_characters#Box_Drawing)
@@ -18,8 +25,13 @@ There's a nice table of box drawing characters and their Unicode codes [here](ht
 
 **Ascii**
 ```rust
-'|' // show hierarchy - pipe char
-'-' // child branch - en-dash char
-'L' // last child in parent - capital "ell" char
+'|'  // show hierarchy - pipe char
+'-'  // child branch - en-dash char
+'L'  // last child in parent - capital "ell" char
 "|-" // show sibling hierarchy - pipe char + en-dash
 ```
+
+## Todo's
+- [ ] read command line arguments instead of asking for input
+- [ ] make the formatting work
+- [ ] add tree-like TUI (see above)
