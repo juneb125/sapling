@@ -51,7 +51,7 @@ fn get_children(parent: &Path) -> io::Result<Vec<OsString>> {
 // entry *needs* to be &Path
 fn format_path(entry: &Path) -> OsString {
     if entry.is_dir() && !ends_with_char(entry, '/') {
-        let fmt_dir = format!("{}/", entry.display());
+        let fmt_dir: String = format!("{}/", entry.display());
         return OsString::from(fmt_dir);
     }
 
@@ -60,9 +60,9 @@ fn format_path(entry: &Path) -> OsString {
 
 fn ends_with_char(dir: &Path, end_char: char) -> bool {
     let length = OsString::from(dir).len();
-    let dir_as_bytes = match dir.to_str() {
+    let dir_as_bytes: &[u8] = match dir.to_str() {
         Some(i) => i.as_bytes(),
-        None => panic!("Couldn't convert to an OsString"),
+        None => panic!("Couldn't convert an OsString to &[u8]"),
     };
 
     dir_as_bytes[length - 1] as char == end_char
