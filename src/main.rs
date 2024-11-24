@@ -67,3 +67,19 @@ fn ends_with_char(dir: &Path, end_char: char) -> bool {
 
     dir_as_bytes[length - 1] as char == end_char
 }
+
+// I just got tired of calling x.to_str().unwrap() a lot on OsStrings
+// I thought there were a lot more of those calls, but idk
+/*
+trait DisplayOsString {
+    fn display(&self) -> &str;
+    // fn display_or_else<T>(&self, f: FnOnce() -> T) -> T;
+}
+
+impl DisplayOsString for OsString {
+    fn display(&self) -> &str {
+        self.to_str()
+            .unwrap_or_else(|| panic!("Couldn't convert OsString to &str"))
+    }
+}
+*/
