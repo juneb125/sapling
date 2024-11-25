@@ -17,21 +17,38 @@ fn main() -> io::Result<()> {
         panic!("Unexpected number of arguments.\nPlease enter just the path");
     }
 
-    println!("{}'s formatted children:", input_path.display());
+    // println!("{}'s formatted children:", input_path.display());
+
+    println!(
+        "Your path formatted is: {}",
+        format_if_dir(input_path).display()
+    );
+
+    let fmt_input: OsString = format_if_dir(&input_path);
 
     for i in get_children(input_path)?.iter() {
-        let i_as_path: &Path = Path::new(i);
+        let full_child_pathbuf = fmt_input.as_path().join(i.as_path());
+        let full_child_path = Path::new(&full_child_pathbuf);
 
-        /* BUG: only formats if input_path is "./"
-         * maybe because it's not the full relative path (just the child's relative path to its parent?????)
+        /*
+         * BUG (or bad quirk i guess):
+         * it actually formats the child, but it includes the input_path :/
+         * even if i use `.strip_prefix(input_path)?`, it gets rid of input_path, but then it doesn't format :(
          */
-        println!("{}", format_path(i_as_path).to_str().unwrap());
+
+        let fmt_i = format_if_dir(full_child_path);
+        println!("{}", &fmt_i.display());
+
+        // println!("{:#?}", full_child_path.strip_prefix(input_path));
+        // println!(
+        //     "{:#?}",
+        //     format_if_dir(full_child_path.strip_prefix(input_path)?)
+        // );
     }
 
     Ok(())
 }
 
-// #[allow(dead_code)]
 fn get_children(parent: &Path) -> io::Result<Vec<OsString>> {
     if !parent.exists() {
         panic!("Path does not exist (b)");
@@ -49,12 +66,19 @@ fn get_children(parent: &Path) -> io::Result<Vec<OsString>> {
 }
 
 // entry *needs* to be &Path
-fn format_path(entry: &Path) -> OsString {
+fn format_if_dir(entry: &Path) -> OsString {
     if entry.is_dir() && !ends_with_char(entry, '/') {
-        let fmt_dir: String = format!("{}/", entry.display());
-        return OsString::from(fmt_dir);
+        // let fmt_dir: &Path = Path::new(format!("{}/", entry.display()));
+        // let fmt_dir: OsString = match entry.to_str() {
+        //     Some(i) => OsString::from(format!("{}/", i)),
+        //     None => panic!(),
+        // };
+        //
+        // fmt_dir.as_path()
+        return OsString::from(format!("{}/", entry.display()));
     }
 
+    // entry
     OsString::from(entry)
 }
 
@@ -70,9 +94,9 @@ fn ends_with_char(dir: &Path, end_char: char) -> bool {
 
 // I just got tired of calling x.to_str().unwrap() a lot on OsStrings
 // I thought there were a lot more of those calls, but idk
-/*
 trait DisplayOsString {
     fn display(&self) -> &str;
+    fn as_path(&self) -> &Path;
     // fn display_or_else<T>(&self, f: FnOnce() -> T) -> T;
 }
 
@@ -81,5 +105,10 @@ impl DisplayOsString for OsString {
         self.to_str()
             .unwrap_or_else(|| panic!("Couldn't convert OsString to &str"))
     }
+
+    // solely to make format_if_dir work
+    fn as_path(&self) -> &Path {
+        // Path::new(self.as_os_str())
+        Path::new(self)
+    }
 }
-*/
