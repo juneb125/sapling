@@ -2,7 +2,7 @@
 use std::env;
 use std::fs;
 use std::io::{self};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 fn main() -> io::Result<()> {
     println!("Hello, world!");
@@ -18,34 +18,33 @@ fn main() -> io::Result<()> {
     let children = get_children(input_path);
 
     for i in children?.iter() {
-        println!("{}", i);
+        let display_i = match i.strip_prefix(input_path) {
+            Ok(a) => a,
+            Err(b) => panic!("{}", b),
+        };
+
+        if i.is_dir() {
+            println!("{}/", display_i.display());
+        } else {
+            println!("{}", display_i.display());
+        }
     }
 
     Ok(())
 }
 
 // #[allow(dead_code)]
-fn get_children(parent: &Path) -> io::Result<Vec<String>> {
+fn get_children(parent: &Path) -> io::Result<Vec<PathBuf>> {
     if !parent.exists() {
         panic!("Path does not exist (b)");
     }
 
     let entries = fs::read_dir(parent)?;
-    let mut children: Vec<String> = Vec::new();
+    let mut children: Vec<PathBuf> = Vec::new();
 
     for entry in entries {
         let entry = entry?;
-
-        match entry.path().strip_prefix(parent) {
-            Ok(i) => {
-                if i.is_dir() {
-                    children.push(format!("|-- {}/", i.display()));
-                } else {
-                    children.push(format!("|-- {}", i.display()));
-                }
-            }
-            Err(i) => panic!("{:#?}", i),
-        }
+        children.push(entry.path());
     }
 
     Ok(children)
