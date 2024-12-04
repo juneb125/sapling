@@ -21,29 +21,26 @@ fn main() -> io::Result<()> {
         panic!("Input path is not a directory");
     }
 
-    println!("Your input path was: {}", input_path.display());
-
-    // begin CL arg testing
+    // CL arg testing
     match options.len() {
-        0 => println!("No arguments found:"),
-        1 => println!("1 argument found:"),
-        i => println!("{} arguments found:", i),
+        0 => println!("No arguments found"),
+        1 => println!("1 argument found"),
+        i => println!("{} arguments found", i),
     }
-
-    println!("[{:#?}]\n", options.join(" "));
-    // end CL arg testing
 
     let children = get_children(input_path)?;
     let num_kids = children.len();
 
+    println!("{}", input_path.display());
+
     for (i, child) in children.iter().enumerate() {
         let display_child = match child.strip_prefix(input_path) {
             Ok(a) => a,
-            Err(b) => panic!("{}", b),
+            Err(err) => panic!("{}", err),
         };
 
         let tree_prefix: &str = match i {
-            i if i < num_kids - 1 => "├",
+            i if i < (num_kids - 1) => "├",
             _ => "└",
         };
 
