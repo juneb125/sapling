@@ -33,18 +33,24 @@ fn main() -> io::Result<()> {
     println!("[{:#?}]\n", options.join(" "));
     // end CL arg testing
 
-    let children = get_children(input_path);
+    let children = get_children(input_path)?;
+    let num_kids = children.len();
 
-    for i in children?.iter() {
-        let display_i = match i.strip_prefix(input_path) {
+    for (i, child) in children.iter().enumerate() {
+        let display_child = match child.strip_prefix(input_path) {
             Ok(a) => a,
             Err(b) => panic!("{}", b),
         };
 
-        if i.is_dir() {
-            println!("{}/", display_i.display());
+        let tree_prefix: &str = match i {
+            i if i < num_kids - 1 => "├",
+            _ => "└",
+        };
+
+        if child.is_dir() {
+            println!("{}── {}/", tree_prefix, display_child.display());
         } else {
-            println!("{}", display_i.display());
+            println!("{}── {}", tree_prefix, display_child.display());
         }
     }
 
