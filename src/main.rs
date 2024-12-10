@@ -34,15 +34,9 @@ fn main() -> io::Result<()> {
     println!("{}", input_path.display());
 
     for (i, child) in children.iter().enumerate() {
-        let display_child = match child.strip_prefix(input_path) {
-            Ok(a) => a,
-            Err(err) => panic!("{}", err),
-        };
+        let display_child: &Path = child.strip_prefix(input_path).unwrap();
 
-        let tree_prefix: &str = match i {
-            i if i < (num_kids - 1) => "├",
-            _ => "└",
-        };
+        let tree_prefix: &str = if i < (num_kids - 1) { "├" } else { "└" };
 
         if child.is_dir() {
             println!("{}── {}/", tree_prefix, display_child.display());
@@ -56,10 +50,6 @@ fn main() -> io::Result<()> {
 
 #[allow(dead_code)]
 fn get_children(parent: &Path) -> io::Result<Vec<PathBuf>> {
-    if !parent.exists() {
-        panic!("Path does not exist (b)");
-    }
-
     let entries = fs::read_dir(parent)?;
     let mut children: Vec<PathBuf> = Vec::new();
 
