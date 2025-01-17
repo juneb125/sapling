@@ -1,4 +1,3 @@
-#[allow(unused_imports)]
 use std::env;
 use std::fs;
 use std::io::{self, Result as IOResult, Write};
@@ -8,7 +7,6 @@ fn main() -> IOResult<()> {
     println!("Hello, world!");
 
     let mut stdout = io::stdout();
-
     let _ = stdout.lock();
 
     let cmd_line_input: Vec<String> = env::args().skip(1).collect();
@@ -16,7 +14,7 @@ fn main() -> IOResult<()> {
     let input_path: &Path = Path::new(cmd_line_input.get(0).unwrap());
 
     // CL args
-    let options: &[String] = cmd_line_input.get(1..).unwrap();
+    // let options: &[String] = cmd_line_input.get(1..).unwrap();
 
     if !input_path.exists() {
         panic!("Input path does not exist");
@@ -27,11 +25,13 @@ fn main() -> IOResult<()> {
     }
 
     // CL arg testing
+    /*
     match options.len() {
         0 => println!("No arguments found"),
         1 => println!("1 argument found"),
         i => println!("{} arguments found", i),
     }
+    */
 
     let children = get_children(input_path)?;
     let num_kids = children.len();
