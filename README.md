@@ -8,12 +8,9 @@ Mini-tree CLI program, written in Rust<br/>
 
 ## Goals
 * no dependencies (except `std`)
-* put it on ...
-    * [crates.io](https://crates.io/)
-    * [nixpkgs](https://search.nixos.org/packages?)
-    * [Homebrew](https://brew.sh/)
+* publish it somewhere (Crates.io or nixpkgs ???)
 
- ## TUI
+## TUI
 **Box Drawings**<br/>
 [Box-Drawing Characters Wikipedia page](https://en.wikipedia.org/wiki/Box-drawing_characters)<br/>
 There's a nice table of box drawing characters and their Unicode codes [here](https://en.wikipedia.org/wiki/Box-drawing_characters#Box_Drawing)
@@ -33,7 +30,5 @@ There's a nice table of box drawing characters and their Unicode codes [here](ht
 ```
 
 ## Todo's
-- [x] read command line arguments instead of asking for input
-- [x] make the formatting work
+- [x] add tree-like TUI (see above)
 - [ ] add support for POSIX style opts / args
-- [ ] add tree-like TUI (see above)
