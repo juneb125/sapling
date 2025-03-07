@@ -4,17 +4,22 @@ use std::io::{self, Result as IOResult, Write};
 use std::path::{Path, PathBuf};
 
 fn main() -> IOResult<()> {
-    println!("Hello, world!");
+    let mut stdout = io::stdout().lock();
 
-    let mut stdout = io::stdout();
-    let _ = stdout.lock();
+    let argv: Vec<String> = env::args().skip(1).collect();
+    let argc: usize = argv.len();
 
-    let cmd_line_input: Vec<String> = env::args().skip(1).collect();
+    if argc < 1 {
+        panic!(
+            "Not enough arguments supplied\n{} {}",
+            "Expected 1 argument, found", argc
+        );
+    }
 
-    let input_path: &Path = Path::new(cmd_line_input.get(0).unwrap());
+    let input_path: &Path = Path::new(&argv[0]);
 
     // CL args
-    // let options: &[String] = cmd_line_input.get(1..).unwrap();
+    // let options: &[String] = argv[1..];
 
     if !input_path.exists() {
         panic!("Input path does not exist");
@@ -24,24 +29,16 @@ fn main() -> IOResult<()> {
         panic!("Input path is not a directory");
     }
 
-    // CL arg testing
-    /*
-    match options.len() {
-        0 => println!("No arguments found"),
-        1 => println!("1 argument found"),
-        i => println!("{} arguments found", i),
-    }
-    */
-
-    let children = get_children(input_path)?;
-    let num_kids = children.len();
+    // uses the "argv, argc" naming convention
+    let childv = get_children(input_path)?;
+    let childc: usize = childv.len();
 
     writeln!(stdout, "{}", input_path.display())?;
 
-    for (i, child) in children.iter().enumerate() {
+    for (i, child) in childv.iter().enumerate() {
         let display_child: &Path = child.strip_prefix(input_path).unwrap();
 
-        let tree_prefix: &str = if i < (num_kids - 1) { "├" } else { "└" };
+        let tree_prefix: &str = if i < (childc - 1) { "├" } else { "└" };
 
         if child.is_dir() {
             writeln!(stdout, "{}── {}/", tree_prefix, display_child.display())?;
@@ -53,15 +50,14 @@ fn main() -> IOResult<()> {
     stdout.flush()
 }
 
-#[allow(dead_code)]
 fn get_children(parent: &Path) -> IOResult<Vec<PathBuf>> {
     let entries = fs::read_dir(parent)?;
     let mut children: Vec<PathBuf> = Vec::new();
 
-    for entry in entries {
-        let entry = entry?;
-        children.push(entry.path());
-    }
+    entries.for_each(|i| match i {
+        Ok(entry) => children.push(entry.path()),
+        Err(_err) => (),
+    });
 
     Ok(children)
 }
