@@ -43,11 +43,7 @@ fn main() -> IOResult<()> {
             _ => "├",
         };
 
-        if child.is_dir() {
-            writeln!(stdout, "{tree_prefix}── {}/", display_child.display())?;
-        } else {
-            writeln!(stdout, "{tree_prefix}── {}", display_child.display())?
-        }
+        writeln!(stdout, "{tree_prefix}── {}", display_child.fmt())?;
     }
 
     stdout.flush()
@@ -67,5 +63,18 @@ impl GetChildren for Path {
                 i.map(|j| j.path())
             })
             .collect()
+    }
+}
+
+trait FormatPath {
+    fn fmt(&self) -> String;
+}
+
+impl FormatPath for Path {
+    fn fmt(&self) -> String {
+        match self {
+            i if i.is_dir() => format!("{}/", self.display()),
+            _ => format!("{}", self.display()),
+        }
     }
 }
