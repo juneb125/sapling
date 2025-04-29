@@ -38,12 +38,15 @@ fn main() -> IOResult<()> {
     for (i, child) in childv.iter().enumerate() {
         let display_child: &Path = child.strip_prefix(input_path).unwrap();
 
-        let tree_prefix: &str = if i < (childc - 1) { "├" } else { "└" };
+        let tree_prefix: &str = match i {
+            _ if i == (childc - 1) => "└",
+            _ => "├",
+        };
 
         if child.is_dir() {
-            writeln!(stdout, "{}── {}/", tree_prefix, display_child.display())?;
+            writeln!(stdout, "{tree_prefix}── {}/", display_child.display())?;
         } else {
-            writeln!(stdout, "{}── {}", tree_prefix, display_child.display())?;
+            writeln!(stdout, "{tree_prefix}── {}", display_child.display())?
         }
     }
 
@@ -52,12 +55,11 @@ fn main() -> IOResult<()> {
 
 fn get_children(parent: &Path) -> IOResult<Vec<PathBuf>> {
     let entries = fs::read_dir(parent)?;
-    let mut children: Vec<PathBuf> = Vec::new();
-
-    entries.for_each(|i| match i {
-        Ok(entry) => children.push(entry.path()),
-        Err(_err) => (),
-    });
-
-    Ok(children)
+    entries
+        .map(|i| {
+            // i: Result<DirEntry, Error>
+            // j: DirEntry
+            i.map(|j| j.path())
+        })
+        .collect()
 }
