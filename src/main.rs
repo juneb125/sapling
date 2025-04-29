@@ -30,7 +30,7 @@ fn main() -> IOResult<()> {
     }
 
     // uses the "argv, argc" naming convention
-    let childv = get_children(input_path)?;
+    let childv = input_path.get_children()?;
     let childc: usize = childv.len();
 
     writeln!(stdout, "{}", input_path.display())?;
@@ -53,13 +53,19 @@ fn main() -> IOResult<()> {
     stdout.flush()
 }
 
-fn get_children(parent: &Path) -> IOResult<Vec<PathBuf>> {
-    let entries = fs::read_dir(parent)?;
-    entries
-        .map(|i| {
-            // i: Result<DirEntry, Error>
-            // j: DirEntry
-            i.map(|j| j.path())
-        })
-        .collect()
+trait GetChildren {
+    fn get_children(&self) -> io::Result<Vec<PathBuf>>;
+}
+
+impl GetChildren for Path {
+    fn get_children(&self) -> IOResult<Vec<PathBuf>> {
+        let entries = fs::read_dir(self)?;
+        entries
+            .map(|i| {
+                // i: Result<DirEntry, Error>
+                // j: DirEntry
+                i.map(|j| j.path())
+            })
+            .collect()
+    }
 }
