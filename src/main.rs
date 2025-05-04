@@ -1,7 +1,10 @@
 use std::env;
-use std::fs;
 use std::io::{self, Result as IOResult, Write};
 use std::path::{Path, PathBuf};
+
+mod util;
+
+use util::{box_chars, FormatPath, GetChildren};
 
 fn main() -> IOResult<()> {
     let mut stdout = io::stdout().lock();
@@ -30,7 +33,7 @@ fn main() -> IOResult<()> {
     }
 
     // uses the "argv, argc" naming convention
-    let childv = input_path.get_children()?;
+    let childv: Vec<PathBuf> = input_path.get_children()?;
     let childc: usize = childv.len();
 
     writeln!(stdout, "{}", input_path.display())?;
@@ -38,43 +41,18 @@ fn main() -> IOResult<()> {
     for (i, child) in childv.iter().enumerate() {
         let display_child: &Path = child.strip_prefix(input_path).unwrap();
 
-        let tree_prefix: &str = match i {
-            _ if i == (childc - 1) => "└",
-            _ => "├",
+        let tree_prefix = match i {
+            _ if i == (childc - 1) => box_chars::ELL,
+            _ => box_chars::TEE,
         };
 
-        writeln!(stdout, "{tree_prefix}── {}", display_child.fmt())?;
+        writeln!(
+            stdout,
+            "{tree_prefix}{} {}",
+            box_chars::DBL_ACROSS,
+            display_child.fmt()
+        )?;
     }
 
     stdout.flush()
-}
-
-trait GetChildren {
-    fn get_children(&self) -> io::Result<Vec<PathBuf>>;
-}
-
-impl GetChildren for Path {
-    fn get_children(&self) -> IOResult<Vec<PathBuf>> {
-        let entries = fs::read_dir(self)?;
-        entries
-            .map(|i| {
-                // i: Result<DirEntry, Error>
-                // j: DirEntry
-                i.map(|j| j.path())
-            })
-            .collect()
-    }
-}
-
-trait FormatPath {
-    fn fmt(&self) -> String;
-}
-
-impl FormatPath for Path {
-    fn fmt(&self) -> String {
-        match self {
-            i if i.is_dir() => format!("{}/", self.display()),
-            _ => format!("{}", self.display()),
-        }
-    }
 }
