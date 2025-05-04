@@ -2,13 +2,8 @@
 Mini-tree CLI program, written in Rust<br/>
 
 **Table of Contents**
-* [Goals](#goals)
 * [TUI](#tui)
 * [Todo's](#todos)
-
-## Goals
-* no dependencies (except `std`)
-* publish it somewhere (Crates.io or nixpkgs ???)
 
 ## TUI
 **Box Drawings**<br/>
