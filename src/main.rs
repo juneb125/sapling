@@ -50,7 +50,7 @@ fn main() -> IOResult<()> {
             stdout,
             "{tree_prefix}{} {}",
             box_chars::DBL_ACROSS,
-            display_child.fmt()
+            display_child.fmt_path()
         )?;
     }
 
