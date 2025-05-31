@@ -37,10 +37,6 @@ fn main() -> IOResult<()> {
     writeln!(stdout, "{}", input_path.display())?;
 
     for (i, child) in childv.iter().enumerate() {
-        let display_child: &Path = child
-            .strip_prefix(input_path)
-            .expect("Couldn't strip prefix");
-
         let tree_prefix = match i {
             _ if i == (childc - 1) => box_chars::ELL,
             _ => box_chars::TEE,
@@ -50,7 +46,7 @@ fn main() -> IOResult<()> {
             stdout,
             "{tree_prefix}{} {}",
             box_chars::DBL_ACROSS,
-            display_child.fmt_path()
+            child.fmt_path(input_path)
         )?;
     }
 
