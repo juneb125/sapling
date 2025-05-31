@@ -25,7 +25,10 @@ fn main() -> IOResult<()> {
     writeln!(stdout, "{}/", input_path.display())?;
 
     // uses the "argv, argc" naming convention
-    let childv: Vec<PathBuf> = input_path.get_children()?.sort_children();
+    let childv: Vec<PathBuf> = match input_path.get_children() {
+        Ok(mut v) => v.sort_children(),
+        Err(e) => panic!("{e}"),
+    };
     let childc: usize = childv.len();
 
     for (i, child) in childv.iter().enumerate() {
