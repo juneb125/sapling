@@ -19,17 +19,14 @@ fn main() -> IOResult<()> {
 
     let input_path: &Path = Path::new(&argv[0]);
 
-    // CL args
-    // let options: &[String] = argv[1..];
-
     panic_if!(!input_path.exists(), "Input path does not exist");
     panic_if!(!input_path.is_dir(), "Input path is not a directory");
+
+    writeln!(stdout, "{}/", input_path.display())?;
 
     // uses the "argv, argc" naming convention
     let childv: Vec<PathBuf> = input_path.get_children()?;
     let childc: usize = childv.len();
-
-    writeln!(stdout, "{}", input_path.display())?;
 
     for (i, child) in childv.iter().enumerate() {
         let tree_prefix = match i {
