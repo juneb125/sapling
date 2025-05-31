@@ -4,7 +4,7 @@ use std::path::{Path, PathBuf};
 
 mod util;
 
-use util::{box_chars, FormatPath, GetChildren};
+use util::{box_chars, FormatPath, GetChildren, SortChildren};
 
 fn main() -> IOResult<()> {
     let mut stdout = io::stdout().lock();
@@ -25,7 +25,7 @@ fn main() -> IOResult<()> {
     writeln!(stdout, "{}/", input_path.display())?;
 
     // uses the "argv, argc" naming convention
-    let childv: Vec<PathBuf> = input_path.get_children()?;
+    let childv: Vec<PathBuf> = input_path.get_children()?.sort_children();
     let childc: usize = childv.len();
 
     for (i, child) in childv.iter().enumerate() {

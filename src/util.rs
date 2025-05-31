@@ -33,6 +33,39 @@ impl FormatPath for Path {
     }
 }
 
+pub trait SortChildren {
+    fn sort_children(&mut self) -> Self;
+}
+
+impl SortChildren for Vec<PathBuf> {
+    // this function is terrible, but it sorts the children how I like
+    // and I couldn't think of another way :/
+    fn sort_children(&mut self) -> Self {
+        let mut non_dirs: Vec<PathBuf> = {
+            let mut foo: Vec<PathBuf> = self
+                .iter()
+                .filter(|&i| !i.is_dir())
+                .map(|i| i.clone())
+                .collect();
+            foo.sort();
+            foo
+        };
+
+        let mut dirs: Vec<PathBuf> = {
+            let mut foo: Vec<PathBuf> = self
+                .iter()
+                .filter(|&i| i.is_dir())
+                .map(|i| i.clone())
+                .collect();
+            foo.sort();
+            foo
+        };
+
+        dirs.append(&mut non_dirs);
+        dirs
+    }
+}
+
 pub mod box_chars {
     pub const TEE: &'static str = "├";
     pub const ELL: &'static str = "└";
