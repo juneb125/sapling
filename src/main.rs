@@ -1,6 +1,6 @@
 use std::env;
 use std::io::{self, Result as IOResult, Write};
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 mod util;
 
@@ -12,12 +12,11 @@ fn main() -> IOResult<()> {
     let argv: Vec<String> = env::args().skip(1).collect();
     let argc: usize = argv.len();
 
-    panic_if!(
-        argc < 1,
-        "Not enough arguments supplied, expected 1, found {argc}"
-    );
-
-    let input_path: &Path = Path::new(&argv[0]);
+    let input_path: PathBuf = if argc >= 1 {
+        PathBuf::from(&argv[0])
+    } else {
+        env::current_dir()?
+    };
 
     panic_if!(!input_path.exists(), "Input path does not exist");
     panic_if!(!input_path.is_dir(), "Input path is not a directory");
@@ -41,7 +40,7 @@ fn main() -> IOResult<()> {
             stdout,
             "{tree_prefix}{} {}",
             box_chars::DBL_ACROSS,
-            child.fmt_path(input_path)
+            child.fmt_path(&input_path)
         )?;
     }
 

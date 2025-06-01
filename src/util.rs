@@ -20,11 +20,11 @@ impl GetChildren for Path {
 }
 
 pub trait FormatPath {
-    fn fmt_path(&self, prefix: &Path) -> String;
+    fn fmt_path(&self, prefix: &PathBuf) -> String;
 }
 
 impl FormatPath for Path {
-    fn fmt_path(&self, prefix: &Path) -> String {
+    fn fmt_path(&self, prefix: &PathBuf) -> String {
         match self.strip_prefix(prefix) {
             Ok(i) if i.is_dir() => format!("{}/", i.display()),
             Ok(i) => format!("{}", i.display()),
